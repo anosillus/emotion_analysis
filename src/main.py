@@ -144,15 +144,15 @@ def save_data(emo_dict, hash_dict, count_dict, name):
 
     with open(f"emo_dict_{name}.pickle", "wb") as f:
         pickle.dump(emo_dict, f)
-    del emo_dict
+    # del emo_dict
 
     with open(f"emo_hash_{name}.pickle", "wb") as f:
         pickle.dump(hash_dict, f)
-    del hash_dict
+    # del hash_dict
 
     with open(f"emo_count_{name}.pickle", "wb") as f:
         pickle.dump(count_dict, f)
-    del count_dict
+    # del count_dict
 
 
 keys = [
@@ -192,10 +192,15 @@ for i, emo_dict in enumerate(tqdm(emo_dicts, total=emo_data_len)):
         continue
     per_emos = emos / len(word_info_list)
     for word_info in word_info_list:
-        word_hash = hash(frozenset(word_info.items()))
-        word_emo_dict[word_hash] += per_emos
-        word_hash_dict[word_hash] = word_info
-        word_count_dict[word_hash] += 1
+        word = word_info.get("原形")
+        # # word_hash = hash(frozenset(word_info.items()))
+        word_emo_dict[word] += per_emos
+        # word_hash_dict[word_hash] = word_info
+        word_count_dict[word] += 1
+
+    if i % 1000 == 0:
+        save_data(word_emo_dict, word_count_dict, word_hash_dict, str(i))
+
 save_data(word_emo_dict, word_count_dict, word_hash_dict, str(i))
 del word_emo_dict
 del word_count_dict
